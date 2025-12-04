@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Performance Dashboard</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f3f0ff;
+      color: #111827;
+    }
+
+    .app {
+      max-width: 1200px;
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .shell {
+      flex: 1;
+      display: flex;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #ddd6fe;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* =========================
+       Sidebar
+    ==========================*/
+
+    .sidebar {
+      background: #3b0764;
+      color: #e9d5ff;
+      width: 220px;
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+      z-index: 20;
+      position: relative;
+    }
+
+    .sidebar-header {
+      padding: 0 20px 18px 20px;
+      border-bottom: 1px solid #4c0f75;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 52px;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      flex-shrink: 0;
+      transition: opacity 0.3s;
+    }
+
+    /* Hamburger that appears in sidebar when opened */
+    .hamburger-sidebar {
+      display: none;
+      width: 26px;
+      height: 20px;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .hamburger-sidebar div {
+      width: 100%;
+      height: 3px;
+      background: #f5f3ff;
+      border-radius: 2px;
+    }
+
+    .logo-text-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-text {
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 0.03em;
+      color: #f5f3ff;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: #c4b5fd;
+    }
+
+    .sidebar-menu {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-item {
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #e9d5ff;
+    }
+    .sidebar-item:hover { background: #4c0f75; }
+    .sidebar-item.active { background: #5b21a5; font-weight: bold; }
+
+    /* =========================
+       Main Area
+    ==========================*/
+
+    .main {
+      flex: 1;
+      padding: 15px 18px;
+      background: #f5f3ff;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Topbar */
+
+    .topbar {
+      height: 60px;
+      padding: 0 20px;
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .topbar-meta {
+      font-size: 13px;
+      color: #6b7280;
+      display: flex;
+      gap: 8px;
+    }
+
+    .topbar-badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #c4b5fd;
+      background: #ede9fe;
+      color: #4c1d95;
+      white-space: nowrap;
+      font-size: 11px;
+    }
+
+    .hamburger {
+      display: none;
+      width: 26px;
+      height: 20px;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .hamburger div {
+      width: 100%;
+      height: 3px;
+      background: #3b0764;
+      border-radius: 2px;
+    }
+
+    #menu-toggle {
+      display: none;
+    }
+
+    /* =========================
+       KPI Cards
+    ==========================*/
+
+    .kpi-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .card-small {
+      flex: 1 1 220px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+    }
+
+    .card-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .card-value {
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .card-sub {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .card-sub span {
+      font-weight: bold;
+      color: #4c1d95;
+    }
+
+    .lower-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .card-half {
+      flex: 1 1 320px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header-title {
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    /* =========================
+       Chart placeholder
+    ==========================*/
+
+    .chart-area {
+      flex: 1;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      position: relative;
+      padding: 10px;
+    }
+
+    .chart-line {
+      border-top: 1px dashed #e5e7eb;
+      position: absolute;
+      left: 12px;
+      right: 12px;
+    }
+
+    .chart-line.line-1 { top: 25%; }
+    .chart-line.line-2 { top: 50%; }
+    .chart-line.line-3 { top: 75%; }
+
+    .chart-bar {
+      width: 10%;
+      background: #a855f7;
+      border-radius: 4px 4px 0 0;
+      display: inline-block;
+      margin: 0 1.5%;
+    }
+
+    /* =========================
+       TABLE
+    ==========================*/
+
+    .table-wrapper {
+      flex: 1;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table th,
+    table td {
+      padding: 7px 6px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 12px;
+    }
+
+    table thead {
+      background: #ede9fe;
+    }
+
+    .status-pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+
+    .ok { background: #dcfce7; color: #166534; }
+    .warn { background: #fef9c3; color: #854d0e; }
+    .low { background: #fee2e2; color: #b91c1c; }
+
+    /* =========================
+       MOBILE LOGIC
+    ==========================*/
+
+    @media (max-width: 768px) {
+
+      /* Sidebar becomes off-screen */
+      .sidebar {
+        position: absolute;
+        transform: translateX(-100%);
+        width: 220px;
+        height: 100%;
+        top: 0;
+        left: 0;
+      }
+
+      /* When open */
+      #menu-toggle:checked ~ .shell .sidebar {
+        transform: translateX(0);
+      }
+
+      /* Dimmed background */
+      #menu-toggle:checked ~ .shell::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: 10;
+      }
+
+      /* Show hamburger on topbar */
+      .hamburger {
+        display: flex;
+      }
+
+      /* Replace logo when menu is open */
+      #menu-toggle:checked ~ .shell .sidebar .logo-mark {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      #menu-toggle:checked ~ .shell .sidebar .hamburger-sidebar {
+        display: flex;
+      }
+
+      /* Sidebar header layout */
+      .sidebar-header {
+        justify-content: flex-start;
+      }
+
+      /* Make content stack */
+      .kpi-row,
+      .lower-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- Mobile checkbox toggle -->
+    <input type="checkbox" id="menu-toggle" />
+
+    <div class="shell">
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+
+          <!-- Hamburger shown inside sidebar when menu is open -->
+          <label for="menu-toggle" class="hamburger-sidebar">
+            <div></div><div></div><div></div>
+          </label>
+
+          <!-- Logo (hidden when menu open in mobile) -->
+          <div class="logo-mark"></div>
+          <div class="logo-text-wrap">
+            <div class="logo-text">EduTrack</div>
+            <div class="logo-sub">Student performance</div>
+          </div>
+        </div>
+
+        <nav class="sidebar-menu">
+          <div class="sidebar-item active">Dashboard</div>
+          <div class="sidebar-item">Classes</div>
+          <div class="sidebar-item">Assessments</div>
+          <div class="sidebar-item">Students</div>
+          <div class="sidebar-item">Settings</div>
+        </nav>
+      </aside>
+
+      <!-- Main Area -->
+      <main class="main">
+        <div class="topbar">
+
+          <!-- Topbar hamburger -->
+          <div class="topbar-title">
+            <label for="menu-toggle" class="hamburger">
+              <div></div><div></div><div></div>
+            </label>
+            Student Performance Overview
+          </div>
+
+          <div class="topbar-meta">
+            <span>Term: Fall 2025</span>
+            <span class="topbar-badge">Updated: 04 Dec 2025</span>
+          </div>
+        </div>
+
+        <!-- KPI Row -->
+        <div class="kpi-row">
+          <div class="card-small">
+            <div class="card-title">Total Students</div>
+            <div class="card-value">524</div>
+            <div class="card-sub"><span>+18</span> vs last term</div>
+          </div>
+
+          <div class="card-small">
+            <div class="card-title">Average Grade</div>
+            <div class="card-value">78.4%</div>
+            <div class="card-sub"><span>+2.1 pts</span> vs last term</div>
+          </div>
+
+          <div class="card-small">
+            <div class="card-title">At-Risk Students</div>
+            <div class="card-value">37</div>
+            <div class="card-sub"><span>-9</span> below 60%</div>
+          </div>
+        </div>
+
+        <!-- Chart + Table -->
+        <div class="lower-row">
+          <div class="card-half">
+            <div class="card-header-title">Average Score by Subject</div>
+
+            <div class="chart-area">
+              <div class="chart-line line-1"></div>
+              <div class="chart-line line-2"></div>
+              <div class="chart-line line-3"></div>
+
+              <div style="position:absolute; bottom:32px; left:26px; right:26px; text-align:center;">
+                <div class="chart-bar" style="height:70px;"></div>
+                <div class="chart-bar" style="height:110px;"></div>
+                <div class="chart-bar" style="height:90px;"></div>
+                <div class="chart-bar" style="height:130px;"></div>
+                <div class="chart-bar" style="height:60px;"></div>
+                <div class="chart-bar" style="height:100px;"></div>
+              </div>
+
+              <div style="position:absolute; bottom:10px; right:12px; font-size:11px; color:#9ca3af;">
+                Static sample – replace with real data
+              </div>
+            </div>
+          </div>
+
+          <div class="card-half">
+            <div class="card-header-title">Recent Assessments</div>
+
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Class</th>
+                    <th>Assessment</th>
+                    <th>Avg.</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>03 Dec</td><td>Math 10A</td><td>Algebra Quiz</td><td>81%</td><td><span class="status-pill ok">On Track</span></td></tr>
+                  <tr><td>02 Dec</td><td>Eng 11B</td><td>Essay Draft</td><td>74%</td><td><span class="status-pill warn">Watch</span></td></tr>
+                  <tr><td>02 Dec</td><td>Sci 9C</td><td>Lab Report</td><td>69%</td><td><span class="status-pill warn">Watch</span></td></tr>
+                  <tr><td>01 Dec</td><td>Hist 10B</td><td>Unit Test</td><td>83%</td><td><span class="status-pill ok">On Track</span></td></tr>
+                  <tr><td>30 Nov</td><td>Math 9D</td><td>Geometry Quiz</td><td>58%</td><td><span class="status-pill low">Below Target</span></td></tr>
+                  <tr><td>29 Nov</td><td>Lang 11A</td><td>Vocab Test</td><td>79%</td><td><span class="status-pill ok">On Track</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+</body>
+</html>

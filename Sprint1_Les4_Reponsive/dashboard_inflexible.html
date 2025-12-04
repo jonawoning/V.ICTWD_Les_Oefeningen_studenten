@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Performance Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f3f0ff; /* soft light purple */
+    }
+
+    .page {
+      width: 1200px;
+      height: 700px;
+      margin: 20px auto;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #ddd6fe;
+      background: #ffffff;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      height: 100%;
+      float: left;
+      background: #3b0764; /* dark professional purple */
+      color: #e9d5ff;
+    }
+
+    .sidebar-inner {
+      padding: 20px 0;
+      box-sizing: border-box;
+      height: 100%;
+    }
+
+    .sidebar-header {
+      padding: 0 20px 18px 20px;
+      border-bottom: 1px solid #4c0f75;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .logo-text {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 0.03em;
+      color: #f5f3ff;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: #c4b5fd;
+      margin-top: 2px;
+    }
+
+    .sidebar-menu {
+      padding-top: 10px;
+    }
+
+    .sidebar-item {
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #e9d5ff;
+    }
+
+    .sidebar-item:hover {
+      background: #4c0f75;
+    }
+
+    .sidebar-item.active {
+      background: #5b21a5;
+      font-weight: bold;
+    }
+
+    /* Main area */
+    .main {
+      margin-left: 220px;
+      height: 100%;
+      padding: 15px 18px;
+      box-sizing: border-box;
+      background: #f5f3ff;
+    }
+
+    .topbar {
+      height: 60px;
+      border-radius: 10px;
+      padding: 0 20px;
+      margin-bottom: 16px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    }
+
+    .topbar-left {
+      float: left;
+      height: 60px;
+      line-height: 60px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #1f2937;
+    }
+
+    .topbar-right {
+      float: right;
+      height: 60px;
+      line-height: 60px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .topbar-badge {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #c4b5fd;
+      font-size: 11px;
+      background: #ede9fe;
+      color: #4c1d95;
+    }
+
+    .content {
+      padding-top: 4px;
+      height: calc(100% - 76px);
+      box-sizing: border-box;
+    }
+
+    .row {
+      width: 100%;
+      margin-bottom: 18px;
+      white-space: nowrap;
+    }
+
+    /* Small cards */
+    .card-small {
+      width: 30%;
+      height: 110px;
+      display: inline-block;
+      margin-right: 3.3%;
+      border-radius: 10px;
+      padding: 16px;
+      box-sizing: border-box;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+      vertical-align: top;
+    }
+
+    .card-small:last-child {
+      margin-right: 0;
+    }
+
+    .card-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .card-value {
+      font-size: 26px;
+      font-weight: bold;
+      color: #111827;
+      margin-bottom: 6px;
+    }
+
+    .card-sub {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .card-sub span {
+      font-weight: bold;
+      color: #4c1d95;
+    }
+
+    /* Half cards */
+    .card-half {
+      width: 48.5%;
+      height: 360px;
+      display: inline-block;
+      border-radius: 10px;
+      padding: 16px;
+      box-sizing: border-box;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+      vertical-align: top;
+    }
+
+    .card-half + .card-half {
+      margin-left: 3%;
+    }
+
+    .card-header-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+
+    .card-header-sub {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    /* Chart area */
+    .chart-area {
+      margin-top: 10px;
+      width: 100%;
+      height: 290px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      position: relative;
+      box-sizing: border-box;
+      padding: 10px;
+      background: #f9fafb;
+    }
+
+    .chart-placeholder-text {
+      position: absolute;
+      bottom: 10px;
+      right: 12px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .chart-line {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      border-top: 1px dashed #e5e7eb;
+    }
+
+    .chart-line.line-1 { top: 25%; }
+    .chart-line.line-2 { top: 50%; }
+    .chart-line.line-3 { top: 75%; }
+
+    .chart-bars {
+      position: absolute;
+      bottom: 32px;
+      left: 26px;
+      right: 26px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .chart-bar {
+      width: 10%;
+      display: inline-block;
+      margin: 0 1.5%;
+      border-radius: 4px 4px 0 0;
+      background: #a855f7;
+    }
+
+    .chart-bar:nth-child(1) { height: 70px; }
+    .chart-bar:nth-child(2) { height: 110px; }
+    .chart-bar:nth-child(3) { height: 90px; }
+    .chart-bar:nth-child(4) { height: 130px; }
+    .chart-bar:nth-child(5) { height: 60px; }
+    .chart-bar:nth-child(6) { height: 100px; }
+
+    .chart-labels {
+      position: absolute;
+      bottom: 14px;
+      left: 26px;
+      right: 26px;
+      text-align: center;
+      font-size: 11px;
+      color: #6b7280;
+      white-space: nowrap;
+    }
+
+    .chart-label {
+      display: inline-block;
+      width: 10%;
+      margin: 0 1.5%;
+    }
+
+    /* Table */
+    .table-wrapper {
+      margin-top: 10px;
+      height: 290px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      padding: 8px;
+      box-sizing: border-box;
+      background: #f9fafb;
+      overflow: hidden;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      color: #111827;
+    }
+
+    .table thead {
+      background: #ede9fe;
+    }
+
+    .table th,
+    .table td {
+      padding: 7px 6px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .table th {
+      font-weight: bold;
+      color: #4b5563;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .status-pill.ok {
+      background: #dcfce7;
+      border-color: #bbf7d0;
+      color: #166534;
+    }
+
+    .status-pill.warn {
+      background: #fef9c3;
+      border-color: #facc15;
+      color: #854d0e;
+    }
+
+    .status-pill.low {
+      background: #fee2e2;
+      border-color: #fecaca;
+      color: #b91c1c;
+    }
+
+    .clearfix::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-inner">
+        <div class="sidebar-header">
+          <div class="logo-mark"></div>
+          <div class="logo-text">
+            EduTrack
+            <div class="logo-sub">Student performance</div>
+          </div>
+        </div>
+
+        <div class="sidebar-menu">
+          <div class="sidebar-item active">Dashboard</div>
+          <div class="sidebar-item">Classes</div>
+          <div class="sidebar-item">Assessments</div>
+          <div class="sidebar-item">Students</div>
+          <div class="sidebar-item">Settings</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar clearfix">
+        <div class="topbar-left">Student Performance Overview</div>
+        <div class="topbar-right">
+          Term: Fall 2025
+          <span class="topbar-badge">Data updated: 04 Dec 2025</span>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- KPI row -->
+        <div class="row">
+          <div class="card-small">
+            <div class="card-title">Total Students</div>
+            <div class="card-value">524</div>
+            <div class="card-sub">
+              <span>+18</span> vs last term
+            </div>
+          </div>
+
+          <div class="card-small">
+            <div class="card-title">Average Grade</div>
+            <div class="card-value">78.4%</div>
+            <div class="card-sub">
+              <span>+2.1 pts</span> vs last term
+            </div>
+          </div>
+
+          <div class="card-small">
+            <div class="card-title">At-Risk Students</div>
+            <div class="card-value">37</div>
+            <div class="card-sub">
+              <span>-9</span> below 60% overall
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart + Table row -->
+        <div class="row">
+          <!-- Chart card -->
+          <div class="card-half">
+            <div class="card-header-title">Average Score by Subject</div>
+            <div class="card-header-sub">Current term, all classes</div>
+
+            <div class="chart-area">
+              <div class="chart-line line-1"></div>
+              <div class="chart-line line-2"></div>
+              <div class="chart-line line-3"></div>
+
+              <div class="chart-bars">
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+              </div>
+
+              <div class="chart-labels">
+                <span class="chart-label">Math</span>
+                <span class="chart-label">Science</span>
+                <span class="chart-label">English</span>
+                <span class="chart-label">History</span>
+                <span class="chart-label">Language</span>
+                <span class="chart-label">Arts</span>
+              </div>
+
+              <div class="chart-placeholder-text">
+                Static sample – replace with real data
+              </div>
+            </div>
+          </div>
+
+          <!-- Table card -->
+          <div class="card-half">
+            <div class="card-header-title">Recent Assessments</div>
+            <div class="card-header-sub">Last 7 days</div>
+
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Class</th>
+                    <th>Assessment</th>
+                    <th>Avg.</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>03 Dec</td>
+                    <td>Math 10A</td>
+                    <td>Algebra Quiz</td>
+                    <td>81%</td>
+                    <td><span class="status-pill ok">On Track</span></td>
+                  </tr>
+                  <tr>
+                    <td>02 Dec</td>
+                    <td>Eng 11B</td>
+                    <td>Essay Draft</td>
+                    <td>74%</td>
+                    <td><span class="status-pill.warn status-pill warn">Watch</span></td>
+                  </tr>
+                  <tr>
+                    <td>02 Dec</td>
+                    <td>Sci 9C</td>
+                    <td>Lab Report</td>
+                    <td>69%</td>
+                    <td><span class="status-pill.warn status-pill warn">Watch</span></td>
+                  </tr>
+                  <tr>
+                    <td>01 Dec</td>
+                    <td>Hist 10B</td>
+                    <td>Unit Test</td>
+                    <td>83%</td>
+                    <td><span class="status-pill ok">On Track</span></td>
+                  </tr>
+                  <tr>
+                    <td>30 Nov</td>
+                    <td>Math 9D</td>
+                    <td>Geometry Quiz</td>
+                    <td>58%</td>
+                    <td><span class="status-pill low">Below Target</span></td>
+                  </tr>
+                  <tr>
+                    <td>29 Nov</td>
+                    <td>Lang 11A</td>
+                    <td>Vocabulary Test</td>
+                    <td>79%</td>
+                    <td><span class="status-pill ok">On Track</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
